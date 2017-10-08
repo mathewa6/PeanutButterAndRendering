@@ -23,9 +23,6 @@ class GameViewController: UIViewController {
         let rotateAction: SCNAction = SCNAction.rotate(by: .pi,
                                                        around: SCNVector3(x: 0, y: 1, z: 0),
                                                        duration: 7.5)
-        let
-        ship = scene.rootNode.childNode(withName: "ship", recursively: true)!
-        ship.runAction(SCNAction.repeatForever(rotateAction))
         
         // create and add a camera to the scene
         let
@@ -33,6 +30,15 @@ class GameViewController: UIViewController {
         cameraNode.camera = SCNCamera()
         cameraNode.name = "camera"
 
+        /*
+         --------------------------------------------------------------------------
+         // This(or any SCNAction) Action combined with motionBlurIntensity causes constant increase in memory use.
+         --------------------------------------------------------------------------
+         */
+        let
+        ship = scene.rootNode.childNode(withName: "ship", recursively: true)!
+        ship.runAction(SCNAction.repeatForever(rotateAction))
+        
         /*
          *
          *
@@ -44,13 +50,14 @@ class GameViewController: UIViewController {
          2. Uncomment the following motionBlurIntensity line and run the project.
          3. Monitor memory usage.
          4. Allocation Profiler shows a continous allocation of objects from
-             -[SCNRenderer _renderSceneWithEngineContext:sceneTime:]
-         
+         -[SCNRenderer _renderSceneWithEngineContext:sceneTime:]
+         5. This abnormal memory use ONLY happens if motionBlurIntensity is used along with SCNAction or user interaction
+         with the camera.
          
          cameraNode.camera?.motionBlurIntensity = 0.6
- 
+         
          --------------------------------------------------------------------------
-
+         
          *
          *
          *
