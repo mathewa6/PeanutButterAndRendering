@@ -31,6 +31,7 @@ class GameViewController: UIViewController {
         let
         cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
+        cameraNode.name = "camera"
 
         /*
          *
@@ -83,6 +84,32 @@ class GameViewController: UIViewController {
         // set the scene to the view
         scnView.scene = scene
 
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        guard let scnView: SCNView = self.view as? SCNView else {
+            return
+        }
+        
+        guard let cameraNode: SCNNode = scnView.scene?.rootNode.childNode(withName: "camera",
+                                                                          recursively: true) else {
+            return
+        }
+        
+        SCNTransaction.begin()
+        SCNTransaction.animationDuration = 1.5
+        
+        SCNTransaction.completionBlock = {
+            cameraNode.camera?.colorFringeStrength = 2.1
+            cameraNode.camera?.colorFringeIntensity = 1.8
+        }
+        
+        cameraNode.camera?.colorFringeStrength = 9.0
+        cameraNode.camera?.colorFringeIntensity = 15.0
+        
+        SCNTransaction.commit()
     }
     
     override var shouldAutorotate: Bool {
