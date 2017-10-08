@@ -16,11 +16,13 @@ class GameViewController: UIViewController {
         super.viewDidLoad()
         
         // create a new scene
+        // Assets from freepbr.com
+        
         let scene = SCNScene(named: "art.scnassets/ship.scn")!
         
         let rotateAction: SCNAction = SCNAction.rotate(by: .pi,
                                                        around: SCNVector3(x: 0, y: 1, z: 0),
-                                                       duration: 5)
+                                                       duration: 7.5)
         let
         ship = scene.rootNode.childNode(withName: "ship", recursively: true)!
         ship.runAction(SCNAction.repeatForever(rotateAction))
@@ -29,7 +31,31 @@ class GameViewController: UIViewController {
         let
         cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
-//        cameraNode.camera?.motionBlurIntensity = 0.6
+
+        /*
+         *
+         *
+         *
+         
+         --------------------------------------------------------------------------
+         
+         1. Run project and note memory usage in the Profiler/Debug tab.
+         2. Uncomment the following motionBlurIntensity line and run the project.
+         3. Monitor memory usage.
+         4. Allocation Profiler shows a continous allocation of objects from
+             -[SCNRenderer _renderSceneWithEngineContext:sceneTime:]
+         
+         
+         cameraNode.camera?.motionBlurIntensity = 0.6
+ 
+         --------------------------------------------------------------------------
+
+         *
+         *
+         *
+         */
+        
+        
         cameraNode.camera?.bloomIntensity = 1.5
         cameraNode.camera?.bloomThreshold = 0.5
         cameraNode.camera?.bloomBlurRadius = 2.5
@@ -57,42 +83,6 @@ class GameViewController: UIViewController {
         // set the scene to the view
         scnView.scene = scene
 
-    }
-    
-    @objc
-    func handleTap(_ gestureRecognize: UIGestureRecognizer) {
-        // retrieve the SCNView
-        let scnView = self.view as! SCNView
-        
-        // check what nodes are tapped
-        let p = gestureRecognize.location(in: scnView)
-        let hitResults = scnView.hitTest(p, options: [:])
-        // check that we clicked on at least one object
-        if hitResults.count > 0 {
-            // retrieved the first clicked object
-            let result = hitResults[0]
-            
-            // get its material
-            let material = result.node.geometry!.firstMaterial!
-            
-            // highlight it
-            SCNTransaction.begin()
-            SCNTransaction.animationDuration = 0.5
-            
-            // on completion - unhighlight
-            SCNTransaction.completionBlock = {
-                SCNTransaction.begin()
-                SCNTransaction.animationDuration = 0.5
-                
-                material.emission.contents = UIColor.black
-                
-                SCNTransaction.commit()
-            }
-            
-            material.emission.contents = UIColor.red
-            
-            SCNTransaction.commit()
-        }
     }
     
     override var shouldAutorotate: Bool {
