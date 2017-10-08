@@ -46,6 +46,8 @@ class GameViewController: UIViewController {
          
          --------------------------------------------------------------------------
          
+         Filed in rdar://34876292.
+         
          1. Run project and note memory usage in the Profiler/Debug tab.
          2. Uncomment the following motionBlurIntensity line and run the project.
          3. Monitor memory usage.
