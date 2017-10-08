@@ -18,52 +18,45 @@ class GameViewController: UIViewController {
         // create a new scene
         let scene = SCNScene(named: "art.scnassets/ship.scn")!
         
+        let rotateAction: SCNAction = SCNAction.rotate(by: .pi,
+                                                       around: SCNVector3(x: 0, y: 1, z: 0),
+                                                       duration: 5)
+        let
+        ship = scene.rootNode.childNode(withName: "ship", recursively: true)!
+        ship.runAction(SCNAction.repeatForever(rotateAction))
+        
         // create and add a camera to the scene
-        let cameraNode = SCNNode()
+        let
+        cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
+//        cameraNode.camera?.motionBlurIntensity = 0.6
+        cameraNode.camera?.bloomIntensity = 1.5
+        cameraNode.camera?.bloomThreshold = 0.5
+        cameraNode.camera?.bloomBlurRadius = 2.5
+        cameraNode.camera?.colorFringeStrength = 2.1
+        cameraNode.camera?.colorFringeIntensity = 1.8
+        
+        if #available(iOS 11, *) {
+            // Activate SSAO
+            cameraNode.camera?.screenSpaceAmbientOcclusionIntensity = 12.0
+            // Configure SSAO
+            cameraNode.camera?.screenSpaceAmbientOcclusionRadius = 1.5 //scene units
+            cameraNode.camera?.screenSpaceAmbientOcclusionBias = 0.3 //scene units
+            cameraNode.camera?.screenSpaceAmbientOcclusionDepthThreshold = 0.2 //scene units
+            cameraNode.camera?.screenSpaceAmbientOcclusionNormalThreshold = 0.3
+        }
+        
         scene.rootNode.addChildNode(cameraNode)
         
         // place the camera
-        cameraNode.position = SCNVector3(x: 0, y: 0, z: 15)
-        
-        // create and add a light to the scene
-        let lightNode = SCNNode()
-        lightNode.light = SCNLight()
-        lightNode.light!.type = .omni
-        lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
-        scene.rootNode.addChildNode(lightNode)
-        
-        // create and add an ambient light to the scene
-        let ambientLightNode = SCNNode()
-        ambientLightNode.light = SCNLight()
-        ambientLightNode.light!.type = .ambient
-        ambientLightNode.light!.color = UIColor.darkGray
-        scene.rootNode.addChildNode(ambientLightNode)
-        
-        // retrieve the ship node
-        let ship = scene.rootNode.childNode(withName: "ship", recursively: true)!
-        
-        // animate the 3d object
-        ship.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 2, z: 0, duration: 1)))
+        cameraNode.position = SCNVector3(x: 0, y: 0, z: 27)
         
         // retrieve the SCNView
         let scnView = self.view as! SCNView
         
         // set the scene to the view
         scnView.scene = scene
-        
-        // allows the user to manipulate the camera
-        scnView.allowsCameraControl = true
-        
-        // show statistics such as fps and timing information
-        scnView.showsStatistics = true
-        
-        // configure the view
-        scnView.backgroundColor = UIColor.black
-        
-        // add a tap gesture recognizer
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        scnView.addGestureRecognizer(tapGesture)
+
     }
     
     @objc
